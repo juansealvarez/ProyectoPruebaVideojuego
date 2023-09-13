@@ -9,12 +9,20 @@ public class ControladorDatos : MonoBehaviour
     public static ControladorDatos Instance { private set; get; }
     public TMP_InputField Nombre;
     public TMP_InputField Apellido;
+    [System.NonSerialized]
     public DatosUsers datosUsers = new DatosUsers();
+    [System.NonSerialized]
     public string ArchivoGuardado;
     [System.NonSerialized]
     public string nombre;
     [System.NonSerialized]
     public string apellido;
+    [System.NonSerialized]
+    public bool primeraVez;
+   [System.NonSerialized]
+    public int balance = 100;
+   [System.NonSerialized]
+    public int ganancias = 0;
 
     private void Awake()
     {
@@ -30,7 +38,10 @@ public class ControladorDatos : MonoBehaviour
             datosUsers = JsonUtility.FromJson<DatosUsers>(contenido);
             nombre = datosUsers.Nombre;
             apellido = datosUsers.Apellido;
-            Debug.Log("Hola " + nombre + " " + apellido);
+            primeraVez = datosUsers.PrimeraVez;
+            VariablesGlobales.balance = datosUsers.Balance;
+            VariablesGlobales.ganancias = datosUsers.Ganancias;
+            VariablesGlobales.PrimeraVez = primeraVez;
         }else
         {
             Debug.Log("El archivo no existe");
@@ -42,10 +53,12 @@ public class ControladorDatos : MonoBehaviour
         DatosUsers nuevosDatos = new DatosUsers()
         {
             Nombre = Nombre.text,
-            Apellido = Apellido.text
+            Apellido = Apellido.text,
+            PrimeraVez = true,
+            Balance = balance,
+            Ganancias = ganancias
         };
         string cadenaJSON = JsonUtility.ToJson(nuevosDatos);
         File.WriteAllText(ArchivoGuardado, cadenaJSON);
-        Debug.Log("Archivo guardado");
     }
 }
